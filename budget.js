@@ -18,10 +18,18 @@ const allBtn = document.querySelector(".third-tab");
 const addExpense = document.querySelector(".add-expense");
 const expenseTitle = document.getElementById("expense-title-input");
 const expenseAmount = document.getElementById("expense-amount-input");
+const expenseError = document.getElementById("expense-error");
 
 const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
+const incomeError = document.getElementById("income-error");
+
+// Validation bounds. Picked to rule out clearly bogus input
+// (e.g. negative spend, blank-padded titles, accidental 1e308) without
+// constraining real budget use.
+const TITLE_MAX_LENGTH = 60;
+const AMOUNT_MAX = 1_000_000_000;
 
 //VARIABLES
 let ENTRY_LIST;
@@ -99,35 +107,32 @@ allBtn.addEventListener("click", function () {
 });
 
 addExpense.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!expenseTitle.value || !expenseAmount.value) return;
-
-  // ADD INPUTs TO ENTRY_LIST
-  let expense = {
+  submitEntry({
     type: "expense",
-    title: expenseTitle.value,
-    amount: +expenseAmount.value,
-  };
-  ENTRY_LIST.push(expense);
-
-  updateUI();
-  clearInput([expenseTitle, expenseAmount]);
+    titleEl: expenseTitle,
+    amountEl: expenseAmount,
+    errorEl: expenseError,
+  });
 });
 
 addIncome.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!incomeTitle.value || !incomeAmount.value) return;
-
-  // ADD INPUTs TO ENTRY_LIST
-  let income = {
+  submitEntry({
     type: "income",
-    title: incomeTitle.value,
-    amount: +incomeAmount.value,
-  };
-  ENTRY_LIST.push(income);
+    titleEl: incomeTitle,
+    amountEl: incomeAmount,
+    errorEl: incomeError,
+  });
+});
 
-  updateUI();
-  clearInput([incomeTitle, incomeAmount]);
+// Clear the visible error as soon as the user edits the offending field,
+// so the form doesn't keep nagging after they've started fixing it.
+[
+  { fields: [expenseTitle, expenseAmount], errorEl: expenseError },
+  { fields: [incomeTitle, incomeAmount], errorEl: incomeError },
+].forEach(({ fields, errorEl }) => {
+  fields.forEach((field) => {
+    field.addEventListener("input", () => clearError(errorEl, fields));
+  });
 });
 
 incomeList.addEventListener("click", deleteOrEdit);
@@ -135,6 +140,106 @@ expenseList.addEventListener("click", deleteOrEdit);
 allList.addEventListener("click", deleteOrEdit);
 
 // HELEPER FUNCS
+
+// Centralised add-entry pipeline: validate, surface a clear message on
+// failure, otherwise commit and reset the form state.
+function submitEntry({ type, titleEl, amountEl, errorEl }) {
+  const fields = [titleEl, amountEl];
+  const result = validateEntry(titleEl, amountEl);
+
+  if (!result.ok) {
+    showError(errorEl, fields, result.message, result.field);
+    return;
+  }
+
+  ENTRY_LIST.push({ type, title: result.title, amount: result.amount });
+  updateUI();
+  clearInput(fields);
+  clearError(errorEl, fields);
+}
+
+// Returns either { ok: true, title, amount } with the cleaned values, or
+// { ok: false, field, message } so the caller knows what to highlight.
+function validateEntry(titleEl, amountEl) {
+  const title = titleEl.value.trim();
+  const amountRaw = amountEl.value.trim();
+
+  if (title.length === 0) {
+    return {
+      ok: false,
+      field: titleEl,
+      message: "Please enter a title.",
+    };
+  }
+  if (title.length > TITLE_MAX_LENGTH) {
+    return {
+      ok: false,
+      field: titleEl,
+      message: `Title must be ${TITLE_MAX_LENGTH} characters or fewer.`,
+    };
+  }
+
+  if (amountRaw.length === 0) {
+    return {
+      ok: false,
+      field: amountEl,
+      message: "Please enter an amount.",
+    };
+  }
+
+  const amount = Number(amountRaw);
+  if (!Number.isFinite(amount)) {
+    return {
+      ok: false,
+      field: amountEl,
+      message: "Amount must be a valid number.",
+    };
+  }
+  if (amount <= 0) {
+    return {
+      ok: false,
+      field: amountEl,
+      message: "Amount must be greater than 0.",
+    };
+  }
+  if (amount > AMOUNT_MAX) {
+    return {
+      ok: false,
+      field: amountEl,
+      message: "Amount is too large.",
+    };
+  }
+
+  // Snap to cents so floating point noise doesn't reach the totals.
+  const normalisedAmount = Math.round(amount * 100) / 100;
+  return { ok: true, title, amount: normalisedAmount };
+}
+
+function showError(errorEl, fields, message, fieldToHighlight) {
+  errorEl.textContent = message;
+  errorEl.classList.remove("hide");
+
+  fields.forEach((field) => {
+    field.classList.remove("invalid");
+    field.removeAttribute("aria-invalid");
+  });
+
+  if (fieldToHighlight) {
+    fieldToHighlight.classList.add("invalid");
+    fieldToHighlight.setAttribute("aria-invalid", "true");
+    fieldToHighlight.focus();
+  }
+}
+
+function clearError(errorEl, fields) {
+  errorEl.textContent = "";
+  errorEl.classList.add("hide");
+  fields.forEach((field) => {
+    field.classList.remove("invalid");
+    field.removeAttribute("aria-invalid");
+  });
+}
+
 function deleteOrEdit(event) {
   const targetBtn = event.target;
   const entry = targetBtn.parentNode;
@@ -157,9 +262,13 @@ function editEntry(entry) {
   if (ENTRY.type == "income") {
     incomeTitle.value = ENTRY.title;
     incomeAmount.value = ENTRY.amount;
+    // Programmatic .value assignment doesn't fire 'input', so any stale
+    // validation feedback would otherwise stick around on a valid edit.
+    clearError(incomeError, [incomeTitle, incomeAmount]);
   } else if (ENTRY.type == "expense") {
     expenseTitle.value = ENTRY.title;
     expenseAmount.value = ENTRY.amount;
+    clearError(expenseError, [expenseTitle, expenseAmount]);
   }
   deleteEntry(entry);
 }
