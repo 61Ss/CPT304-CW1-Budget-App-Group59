@@ -174,6 +174,41 @@ input[type="number"] {
   user-select: auto;
 }
 
+/* Inline validation feedback. Positioned above the input row so it never
+   overlaps the list above and never shifts the existing layout.
+   Selectors are scoped through #expense / #income to outweigh the existing
+   `.budget-dashboard #expense .input *` ID-level rule, otherwise the
+   element would be forced back to `display: inline-block` and `.hide`
+   would never take effect. */
+.budget-dashboard #expense .input .error-message,
+.budget-dashboard #income .input .error-message {
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  margin: 0;
+  padding: 8px 14px;
+  background-color: #fdecea;
+  color: #b00020;
+  font-size: 0.85em;
+  font-family: "Gilroy Bold";
+  border-top: 1px solid #f5c2c0;
+  border-bottom: 1px solid #f5c2c0;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.budget-dashboard #expense .input .error-message.hide,
+.budget-dashboard #income .input .error-message.hide {
+  display: none;
+}
+
+.budget-dashboard #expense .input input.invalid,
+.budget-dashboard #income .input input.invalid {
+  box-shadow: 0 0 0 2px #f0624d;
+}
+
 /* ////////// ALL ///////////// */
 .budget-dashboard #all {
   width: 360px;
