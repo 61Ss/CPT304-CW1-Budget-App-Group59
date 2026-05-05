@@ -174,39 +174,69 @@ input[type="number"] {
   user-select: auto;
 }
 
-/* Inline validation feedback. Positioned above the input row so it never
-   overlaps the list above and never shifts the existing layout.
-   Selectors are scoped through #expense / #income to outweigh the existing
-   `.budget-dashboard #expense .input *` ID-level rule, otherwise the
-   element would be forced back to `display: inline-block` and `.hide`
-   would never take effect. */
-.budget-dashboard #expense .input .error-message,
-.budget-dashboard #income .input .error-message {
-  position: absolute;
-  display: block;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  margin: 0;
-  padding: 8px 14px;
-  background-color: #fdecea;
-  color: #b00020;
-  font-size: 0.85em;
-  font-family: "Gilroy Bold";
-  border-top: 1px solid #f5c2c0;
-  border-bottom: 1px solid #f5c2c0;
-  text-align: left;
+/* Modal alert dialog — surfaces validation feedback as a popup instead of
+   inline UI noise. Fixed positioning with a flex centering pattern so it
+   sits over everything regardless of viewport size. */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
   box-sizing: border-box;
 }
 
-.budget-dashboard #expense .input .error-message.hide,
-.budget-dashboard #income .input .error-message.hide {
+.modal-overlay.hide {
   display: none;
 }
 
-.budget-dashboard #expense .input input.invalid,
-.budget-dashboard #income .input input.invalid {
-  box-shadow: 0 0 0 2px #f0624d;
+.modal-overlay .modal {
+  background-color: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 320px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.modal-overlay .modal-title {
+  margin: 0 0 12px;
+  color: #1a0034;
+  font-family: "Gilroy Bold";
+  font-size: 1.2em;
+}
+
+.modal-overlay .modal-message {
+  margin: 0 0 20px;
+  color: #1a0034;
+  font-family: "Gilroy";
+  font-size: 1em;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.modal-overlay .modal-ok {
+  display: inline-block;
+  min-width: 100px;
+  padding: 10px 20px;
+  background-color: #2a0355;
+  color: #fff;
+  font-family: "Gilroy Bold";
+  font-size: 1em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.modal-overlay .modal-ok:hover,
+.modal-overlay .modal-ok:focus {
+  background-color: #3d0a78;
+  outline: none;
 }
 
 /* ////////// ALL ///////////// */

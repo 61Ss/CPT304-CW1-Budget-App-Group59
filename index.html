@@ -39,12 +39,6 @@
         <div class="hide" id="expense">
           <ul class="list"></ul>
           <div class="input">
-            <p
-              class="error-message hide"
-              id="expense-error"
-              role="alert"
-              aria-live="polite"
-            ></p>
             <input
               type="text"
               id="expense-title-input"
@@ -73,12 +67,6 @@
         <div class="hide" id="income">
           <ul class="list"></ul>
           <div class="input">
-            <p
-              class="error-message hide"
-              id="income-error"
-              role="alert"
-              aria-live="polite"
-            ></p>
             <input
               type="text"
               id="income-title-input"
@@ -107,6 +95,20 @@
         <div id="all">
           <ul class="list"></ul>
         </div>
+      </div>
+    </div>
+    <div
+      class="modal-overlay hide"
+      id="alert-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="alert-modal-title"
+      aria-describedby="alert-modal-message"
+    >
+      <div class="modal" role="document">
+        <h2 class="modal-title" id="alert-modal-title">Notice</h2>
+        <p class="modal-message" id="alert-modal-message"></p>
+        <button class="modal-ok" id="alert-modal-ok" type="button">OK</button>
       </div>
     </div>
     <script src="./chart.js"></script>

@@ -18,12 +18,16 @@ const allBtn = document.querySelector(".third-tab");
 const addExpense = document.querySelector(".add-expense");
 const expenseTitle = document.getElementById("expense-title-input");
 const expenseAmount = document.getElementById("expense-amount-input");
-const expenseError = document.getElementById("expense-error");
 
 const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
-const incomeError = document.getElementById("income-error");
+
+// MODAL ALERT — single dialog reused for every validation message.
+const alertModal = document.getElementById("alert-modal");
+const alertMessageEl = document.getElementById("alert-modal-message");
+const alertOkBtn = document.getElementById("alert-modal-ok");
+let alertReturnFocus = null;
 
 // Validation bounds. Picked to rule out clearly bogus input
 // (e.g. negative spend, blank-padded titles, accidental 1e308) without
@@ -111,7 +115,6 @@ addExpense.addEventListener("click", function () {
     type: "expense",
     titleEl: expenseTitle,
     amountEl: expenseAmount,
-    errorEl: expenseError,
   });
 });
 
@@ -120,19 +123,18 @@ addIncome.addEventListener("click", function () {
     type: "income",
     titleEl: incomeTitle,
     amountEl: incomeAmount,
-    errorEl: incomeError,
   });
 });
 
-// Clear the visible error as soon as the user edits the offending field,
-// so the form doesn't keep nagging after they've started fixing it.
-[
-  { fields: [expenseTitle, expenseAmount], errorEl: expenseError },
-  { fields: [incomeTitle, incomeAmount], errorEl: incomeError },
-].forEach(({ fields, errorEl }) => {
-  fields.forEach((field) => {
-    field.addEventListener("input", () => clearError(errorEl, fields));
-  });
+// Modal dismissal: OK button, ESC key, or click on the backdrop.
+alertOkBtn.addEventListener("click", closeAlert);
+alertModal.addEventListener("click", function (event) {
+  if (event.target === alertModal) closeAlert();
+});
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && !alertModal.classList.contains("hide")) {
+    closeAlert();
+  }
 });
 
 incomeList.addEventListener("click", deleteOrEdit);
@@ -143,19 +145,20 @@ allList.addEventListener("click", deleteOrEdit);
 
 // Centralised add-entry pipeline: validate, surface a clear message on
 // failure, otherwise commit and reset the form state.
-function submitEntry({ type, titleEl, amountEl, errorEl }) {
-  const fields = [titleEl, amountEl];
+function submitEntry({ type, titleEl, amountEl }) {
   const result = validateEntry(titleEl, amountEl);
 
   if (!result.ok) {
-    showError(errorEl, fields, result.message, result.field);
+    // result.field is the input that caused the failure; we hand it to
+    // showAlert so focus jumps back there once the user dismisses the
+    // popup, making it obvious where to fix the problem.
+    showAlert(result.message, result.field);
     return;
   }
 
   ENTRY_LIST.push({ type, title: result.title, amount: result.amount });
   updateUI();
-  clearInput(fields);
-  clearError(errorEl, fields);
+  clearInput([titleEl, amountEl]);
 }
 
 // Returns either { ok: true, title, amount } with the cleaned values, or
@@ -215,29 +218,23 @@ function validateEntry(titleEl, amountEl) {
   return { ok: true, title, amount: normalisedAmount };
 }
 
-function showError(errorEl, fields, message, fieldToHighlight) {
-  errorEl.textContent = message;
-  errorEl.classList.remove("hide");
-
-  fields.forEach((field) => {
-    field.classList.remove("invalid");
-    field.removeAttribute("aria-invalid");
-  });
-
-  if (fieldToHighlight) {
-    fieldToHighlight.classList.add("invalid");
-    fieldToHighlight.setAttribute("aria-invalid", "true");
-    fieldToHighlight.focus();
-  }
+// Open the modal with a message. `focusOnClose` is the element that should
+// receive focus after the dialog is dismissed — typically the offending
+// input — which lets keyboard users keep flowing without re-grabbing the
+// mouse.
+function showAlert(message, focusOnClose) {
+  alertMessageEl.textContent = message;
+  alertModal.classList.remove("hide");
+  alertReturnFocus = focusOnClose || document.activeElement;
+  alertOkBtn.focus();
 }
 
-function clearError(errorEl, fields) {
-  errorEl.textContent = "";
-  errorEl.classList.add("hide");
-  fields.forEach((field) => {
-    field.classList.remove("invalid");
-    field.removeAttribute("aria-invalid");
-  });
+function closeAlert() {
+  alertModal.classList.add("hide");
+  if (alertReturnFocus && typeof alertReturnFocus.focus === "function") {
+    alertReturnFocus.focus();
+  }
+  alertReturnFocus = null;
 }
 
 function deleteOrEdit(event) {
@@ -262,13 +259,9 @@ function editEntry(entry) {
   if (ENTRY.type == "income") {
     incomeTitle.value = ENTRY.title;
     incomeAmount.value = ENTRY.amount;
-    // Programmatic .value assignment doesn't fire 'input', so any stale
-    // validation feedback would otherwise stick around on a valid edit.
-    clearError(incomeError, [incomeTitle, incomeAmount]);
   } else if (ENTRY.type == "expense") {
     expenseTitle.value = ENTRY.title;
     expenseAmount.value = ENTRY.amount;
-    clearError(expenseError, [expenseTitle, expenseAmount]);
   }
   deleteEntry(entry);
 }
