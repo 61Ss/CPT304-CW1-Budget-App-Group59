@@ -32,8 +32,30 @@ const DELETE = "delete",
   EDIT = "edit";
 
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+ENTRY_LIST = loadEntryList();
 updateUI();
+
+// Defensive load: coerce types and drop malformed records so a tampered
+// localStorage payload cannot reintroduce script-bearing strings or break
+// the UI on refresh.
+function loadEntryList() {
+  let raw;
+  try {
+    raw = JSON.parse(localStorage.getItem("entry_list"));
+  } catch (e) {
+    raw = null;
+  }
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (e) =>
+        e &&
+        (e.type === "income" || e.type === "expense") &&
+        typeof e.title === "string" &&
+        Number.isFinite(+e.amount)
+    )
+    .map((e) => ({ type: e.type, title: e.title, amount: +e.amount }));
+}
 
 //EVENT LISTENERS
 expenseBtn.addEventListener("click", function () {
@@ -148,13 +170,30 @@ function updateUI() {
 }
 
 function showEntry(list, type, title, amount, id) {
-  const entry = `<li id="${id}" class="${type}">
-                    <div class="entry">${title} : $${amount}</div>
-                    <div id="edit"></div>
-                    <div id="delete"></div>
-                  </li>`;
-  const position = "afterbegin";
-  list.insertAdjacentHTML(position, entry);
+  // Build the row with DOM APIs and textContent instead of an HTML string.
+  // textContent never parses markup, so a title like
+  // `<img src=x onerror=...>` is rendered as plain text and the persistent
+  // XSS sink (insertAdjacentHTML on user data) is removed.
+  const li = document.createElement("li");
+  li.id = String(id);
+  li.className = type;
+
+  const entryDiv = document.createElement("div");
+  entryDiv.className = "entry";
+  entryDiv.textContent = `${title} : $${amount}`;
+
+  const editDiv = document.createElement("div");
+  editDiv.id = "edit";
+
+  const deleteDiv = document.createElement("div");
+  deleteDiv.id = "delete";
+
+  li.appendChild(entryDiv);
+  li.appendChild(editDiv);
+  li.appendChild(deleteDiv);
+
+  // Equivalent of insertAdjacentHTML(..., "afterbegin").
+  list.prepend(li);
 }
 
 function clearElement(elements) {
