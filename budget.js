@@ -30,6 +30,7 @@ let balance = 0,
   outcome = 0;
 const DELETE = "delete",
   EDIT = "edit";
+const ENTRY_STORAGE_KEY = "entry_list";
 
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = loadEntryList();
@@ -39,13 +40,25 @@ updateUI();
 // localStorage payload cannot reintroduce script-bearing strings or break
 // the UI on refresh.
 function loadEntryList() {
+  const storedEntries = localStorage.getItem(ENTRY_STORAGE_KEY);
   let raw;
+
+  if (storedEntries === null) return [];
+
   try {
-    raw = JSON.parse(localStorage.getItem("entry_list"));
+    raw = JSON.parse(storedEntries);
   } catch (e) {
-    raw = null;
+    console.warn("Ignoring invalid entry data from localStorage.", e);
+    localStorage.removeItem(ENTRY_STORAGE_KEY);
+    return [];
   }
-  if (!Array.isArray(raw)) return [];
+
+  if (!Array.isArray(raw)) {
+    console.warn("Ignoring unexpected entry_list payload from localStorage.");
+    localStorage.removeItem(ENTRY_STORAGE_KEY);
+    return [];
+  }
+
   return raw
     .filter(
       (e) =>
@@ -55,6 +68,14 @@ function loadEntryList() {
         Number.isFinite(+e.amount)
     )
     .map((e) => ({ type: e.type, title: e.title, amount: +e.amount }));
+}
+
+function persistEntryList() {
+  try {
+    localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(ENTRY_LIST));
+  } catch (e) {
+    console.warn("Unable to persist entry data to localStorage.", e);
+  }
 }
 
 //EVENT LISTENERS
@@ -166,7 +187,7 @@ function updateUI() {
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
   updateChart(income, outcome);
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+  persistEntryList();
 }
 
 function showEntry(list, type, title, amount, id) {
