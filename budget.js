@@ -22,6 +22,7 @@ const expenseAmount = document.getElementById("expense-amount-input");
 const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
+const tabs = [expenseBtn, incomeBtn, allBtn];
 
 // MODAL ALERT — single dialog reused for every validation message.
 const alertModal = document.getElementById("alert-modal");
@@ -92,22 +93,27 @@ function persistEntryList() {
 
 //EVENT LISTENERS
 expenseBtn.addEventListener("click", function () {
-  show(expenseEl);
-  hide([incomeEl, allEl]);
-  active(expenseBtn);
-  inactive([incomeBtn, allBtn]);
+  activateTab(expenseBtn, expenseEl, [incomeEl, allEl], [incomeBtn, allBtn]);
 });
 incomeBtn.addEventListener("click", function () {
-  show(incomeEl);
-  hide([expenseEl, allEl]);
-  active(incomeBtn);
-  inactive([expenseBtn, allBtn]);
+  activateTab(incomeBtn, incomeEl, [expenseEl, allEl], [expenseBtn, allBtn]);
 });
 allBtn.addEventListener("click", function () {
-  show(allEl);
-  hide([incomeEl, expenseEl]);
-  active(allBtn);
-  inactive([incomeBtn, expenseBtn]);
+  activateTab(allBtn, allEl, [incomeEl, expenseEl], [incomeBtn, expenseBtn]);
+});
+
+tabs.forEach((tab, index) => {
+  tab.addEventListener("keydown", function (event) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    const nextIndex =
+      event.key === "ArrowRight"
+        ? (index + 1) % tabs.length
+        : (index - 1 + tabs.length) % tabs.length;
+    tabs[nextIndex].focus();
+    tabs[nextIndex].click();
+  });
 });
 
 addExpense.addEventListener("click", function () {
@@ -238,12 +244,14 @@ function closeAlert() {
 }
 
 function deleteOrEdit(event) {
-  const targetBtn = event.target;
+  const targetBtn = event.target.closest("button[data-action]");
+  if (!targetBtn) return;
+
   const entry = targetBtn.parentNode;
 
-  if (targetBtn.id == EDIT) {
+  if (targetBtn.dataset.action == EDIT) {
     editEntry(entry);
-  } else if (targetBtn.id == DELETE) {
+  } else if (targetBtn.dataset.action == DELETE) {
     deleteEntry(entry);
   }
 }
@@ -305,15 +313,21 @@ function showEntry(list, type, title, amount, id) {
   entryDiv.className = "entry";
   entryDiv.textContent = `${title} : $${amount}`;
 
-  const editDiv = document.createElement("div");
-  editDiv.id = "edit";
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.className = "action-btn edit";
+  editButton.dataset.action = EDIT;
+  editButton.setAttribute("aria-label", `Edit ${title}`);
 
-  const deleteDiv = document.createElement("div");
-  deleteDiv.id = "delete";
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "action-btn delete";
+  deleteButton.dataset.action = DELETE;
+  deleteButton.setAttribute("aria-label", `Delete ${title}`);
 
   li.appendChild(entryDiv);
-  li.appendChild(editDiv);
-  li.appendChild(deleteDiv);
+  li.appendChild(editButton);
+  li.appendChild(deleteButton);
 
   // Equivalent of insertAdjacentHTML(..., "afterbegin").
   list.prepend(li);
@@ -346,19 +360,32 @@ function clearInput(inputs) {
 
 function show(element) {
   element.classList.remove("hide");
+  element.removeAttribute("hidden");
 }
 
 function hide(elements) {
   elements.forEach((element) => {
     element.classList.add("hide");
+    element.setAttribute("hidden", "");
   });
 }
 
 function active(element) {
   element.classList.add("focus");
+  element.setAttribute("aria-selected", "true");
+  element.tabIndex = 0;
 }
 function inactive(elements) {
   elements.forEach((element) => {
     element.classList.remove("focus");
+    element.setAttribute("aria-selected", "false");
+    element.tabIndex = -1;
   });
+}
+
+function activateTab(activeButton, panelToShow, panelsToHide, buttonsToDeactivate) {
+  show(panelToShow);
+  hide(panelsToHide);
+  active(activeButton);
+  inactive(buttonsToDeactivate);
 }

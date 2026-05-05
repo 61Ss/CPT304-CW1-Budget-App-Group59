@@ -31,12 +31,48 @@
       </div>
       <div class="budget-dashboard">
         <div class="dash-title">Dashboard</div>
-        <div class="toggle">
-          <div class="first-tab">Expenses</div>
-          <div class="second-tab">Income</div>
-          <div class="third-tab focus">All</div>
+        <div class="toggle" role="tablist" aria-label="Entry views">
+          <button
+            class="first-tab"
+            id="expense-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="expense"
+            tabindex="-1"
+          >
+            Expenses
+          </button>
+          <button
+            class="second-tab"
+            id="income-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="income"
+            tabindex="-1"
+          >
+            Income
+          </button>
+          <button
+            class="third-tab focus"
+            id="all-tab"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="all"
+            tabindex="0"
+          >
+            All
+          </button>
         </div>
-        <div class="hide" id="expense">
+        <div
+          class="hide"
+          id="expense"
+          role="tabpanel"
+          aria-labelledby="expense-tab"
+          hidden
+        >
           <ul class="list"></ul>
           <div class="input">
             <input
@@ -56,15 +92,22 @@
               step="0.01"
               inputmode="decimal"
             />
-            <div
+            <button
               class="add-expense"
-              role="button"
-              tabindex="0"
+              type="button"
               aria-label="Add expense"
-            ><img src="icon/plus.png" alt="+" /></div>
+            >
+              <img src="icon/plus.png" alt="" />
+            </button>
           </div>
         </div>
-        <div class="hide" id="income">
+        <div
+          class="hide"
+          id="income"
+          role="tabpanel"
+          aria-labelledby="income-tab"
+          hidden
+        >
           <ul class="list"></ul>
           <div class="input">
             <input
@@ -84,15 +127,16 @@
               step="0.01"
               inputmode="decimal"
             />
-            <div
+            <button
               class="add-income"
-              role="button"
-              tabindex="0"
+              type="button"
               aria-label="Add income"
-            ><img src="icon/plus.png" alt="+" /></div>
+            >
+              <img src="icon/plus.png" alt="" />
+            </button>
           </div>
         </div>
-        <div id="all">
+        <div id="all" role="tabpanel" aria-labelledby="all-tab">
           <ul class="list"></ul>
         </div>
       </div>
