@@ -28,13 +28,23 @@ const tabs = [expenseBtn, incomeBtn, allBtn];
 const alertModal = document.getElementById("alert-modal");
 const alertMessageEl = document.getElementById("alert-modal-message");
 const alertOkBtn = document.getElementById("alert-modal-ok");
+const cookieBanner = document.getElementById("cookie-banner");
+const cookieAcceptBtn = document.getElementById("cookie-accept-btn");
+const cookieDeclineBtn = document.getElementById("cookie-decline-btn");
+const cookieSettingsBtn = document.getElementById("cookie-settings-btn");
 let alertReturnFocus = null;
+let cookieReturnFocus = null;
 
 // Validation bounds. Picked to rule out clearly bogus input
 // (e.g. negative spend, blank-padded titles, accidental 1e308) without
 // constraining real budget use.
 const TITLE_MAX_LENGTH = 60;
 const AMOUNT_MAX = 1_000_000_000;
+const STORAGE_CONSENT_KEY = "storage_consent";
+const STORAGE_CONSENT_VERSION_KEY = "storage_consent_version";
+const STORAGE_CONSENT_ACCEPTED = "accepted";
+const STORAGE_CONSENT_DECLINED = "declined";
+const STORAGE_CONSENT_VERSION = "v2";
 
 //VARIABLES
 let ENTRY_LIST;
@@ -44,16 +54,20 @@ let balance = 0,
 const DELETE = "delete",
   EDIT = "edit";
 const ENTRY_STORAGE_KEY = "entry_list";
+let storageConsent = readStoredConsent();
 
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = loadEntryList();
 updateUI();
+initCookieBanner();
 
 // Defensive load: coerce types and drop malformed records so a tampered
 // localStorage payload cannot reintroduce script-bearing strings or break
 // the UI on refresh.
 function loadEntryList() {
-  const storedEntries = localStorage.getItem(ENTRY_STORAGE_KEY);
+  if (storageConsent !== STORAGE_CONSENT_ACCEPTED) return [];
+
+  const storedEntries = readFromStorage(ENTRY_STORAGE_KEY);
   let raw;
 
   if (storedEntries === null) return [];
@@ -62,13 +76,13 @@ function loadEntryList() {
     raw = JSON.parse(storedEntries);
   } catch (e) {
     console.warn("Ignoring invalid entry data from localStorage.", e);
-    localStorage.removeItem(ENTRY_STORAGE_KEY);
+    removeFromStorage(ENTRY_STORAGE_KEY);
     return [];
   }
 
   if (!Array.isArray(raw)) {
     console.warn("Ignoring unexpected entry_list payload from localStorage.");
-    localStorage.removeItem(ENTRY_STORAGE_KEY);
+    removeFromStorage(ENTRY_STORAGE_KEY);
     return [];
   }
 
@@ -84,11 +98,9 @@ function loadEntryList() {
 }
 
 function persistEntryList() {
-  try {
-    localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(ENTRY_LIST));
-  } catch (e) {
-    console.warn("Unable to persist entry data to localStorage.", e);
-  }
+  if (storageConsent !== STORAGE_CONSENT_ACCEPTED) return;
+
+  writeToStorage(ENTRY_STORAGE_KEY, JSON.stringify(ENTRY_LIST));
 }
 
 //EVENT LISTENERS
@@ -130,6 +142,15 @@ addIncome.addEventListener("click", function () {
     titleEl: incomeTitle,
     amountEl: incomeAmount,
   });
+});
+cookieAcceptBtn.addEventListener("click", function () {
+  applyStorageConsent(STORAGE_CONSENT_ACCEPTED);
+});
+cookieDeclineBtn.addEventListener("click", function () {
+  applyStorageConsent(STORAGE_CONSENT_DECLINED);
+});
+cookieSettingsBtn.addEventListener("click", function () {
+  openCookieBanner(cookieSettingsBtn);
 });
 
 // Modal dismissal: OK button, ESC key, or click on the backdrop.
@@ -298,6 +319,95 @@ function updateUI() {
   });
   updateChart(income, outcome);
   persistEntryList();
+}
+
+function readStoredConsent() {
+  const storedConsentVersion = readFromStorage(STORAGE_CONSENT_VERSION_KEY);
+  const storedConsent = readFromStorage(STORAGE_CONSENT_KEY);
+
+  if (storedConsentVersion !== STORAGE_CONSENT_VERSION) {
+    removeFromStorage(STORAGE_CONSENT_KEY);
+    removeFromStorage(STORAGE_CONSENT_VERSION_KEY);
+    return null;
+  }
+
+  if (
+    storedConsent === STORAGE_CONSENT_ACCEPTED ||
+    storedConsent === STORAGE_CONSENT_DECLINED
+  ) {
+    return storedConsent;
+  }
+
+  return null;
+}
+
+function initCookieBanner() {
+  if (storageConsent === null) {
+    openCookieBanner();
+    return;
+  }
+
+  closeCookieBanner();
+}
+
+function openCookieBanner(focusSource) {
+  cookieBanner.classList.remove("hide");
+  cookieBanner.removeAttribute("hidden");
+  cookieReturnFocus = focusSource || document.activeElement;
+  cookieAcceptBtn.focus();
+}
+
+function closeCookieBanner() {
+  cookieBanner.classList.add("hide");
+  cookieBanner.setAttribute("hidden", "");
+
+  if (cookieReturnFocus && typeof cookieReturnFocus.focus === "function") {
+    cookieReturnFocus.focus();
+  }
+  cookieReturnFocus = null;
+}
+
+function applyStorageConsent(nextConsent) {
+  storageConsent = nextConsent;
+  closeCookieBanner();
+
+  writeToStorage(STORAGE_CONSENT_KEY, nextConsent);
+  writeToStorage(STORAGE_CONSENT_VERSION_KEY, STORAGE_CONSENT_VERSION);
+
+  if (nextConsent === STORAGE_CONSENT_ACCEPTED) {
+    persistEntryList();
+  } else {
+    removeFromStorage(ENTRY_STORAGE_KEY);
+  }
+}
+
+function readFromStorage(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.warn(`Unable to read ${key} from localStorage.`, e);
+    return null;
+  }
+}
+
+function writeToStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    console.warn(`Unable to write ${key} to localStorage.`, e);
+    return false;
+  }
+}
+
+function removeFromStorage(key) {
+  try {
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    console.warn(`Unable to remove ${key} from localStorage.`, e);
+    return false;
+  }
 }
 
 function showEntry(list, type, title, amount, id) {
