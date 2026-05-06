@@ -280,6 +280,77 @@ input[type="number"] {
   outline: none;
 }
 
+.cookie-banner {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 22px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+  z-index: 1100;
+  box-sizing: border-box;
+}
+
+.cookie-banner.hide,
+.cookie-banner[hidden] {
+  display: none;
+}
+
+.cookie-banner-copy {
+  max-width: 620px;
+}
+
+.cookie-banner-title {
+  margin: 0 0 8px;
+  color: #1a0034;
+  font-family: "Gilroy Bold";
+  font-size: 1.15em;
+}
+
+.cookie-banner-description {
+  margin: 0;
+  color: #35244e;
+  font-size: 0.96em;
+  line-height: 1.5;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  min-width: 108px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-family: "Gilroy Bold";
+}
+
+.cookie-btn-primary {
+  background-color: #2a0355;
+  color: #fff;
+}
+
+.cookie-btn-secondary {
+  background-color: #efe9f8;
+  color: #2a0355;
+}
+
+.cookie-btn:hover,
+.cookie-btn:focus-visible {
+  filter: brightness(0.97);
+}
+
 /* ////////// ALL ///////////// */
 .budget-dashboard #all {
   width: 360px;
@@ -605,6 +676,7 @@ input[type="number"] {
   flex-direction: column;
   gap: 2px;
   line-height: 1.2;
+  flex: 1 1 auto;
 }
 
 .budget-footer .footer-brand {
@@ -622,4 +694,138 @@ input[type="number"] {
   font-size: 0.85em;
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.06em;
+}
+
+.footer-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.9em;
+  font-family: "Gilroy";
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: #fff;
+}
+
+.policy-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(122, 72, 199, 0.28), transparent 34%),
+    linear-gradient(180deg, #160124 0%, #25113f 100%);
+  color: #1a0034;
+}
+
+.policy-shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 20px 56px;
+  box-sizing: border-box;
+}
+
+.policy-card {
+  background-color: #fff;
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  padding: 36px 32px;
+}
+
+.policy-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #2a0355;
+  font-family: "Gilroy Bold";
+}
+
+.policy-title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  color: #1a0034;
+  font-family: "Gilroy Bold";
+}
+
+.policy-updated {
+  margin: 0 0 28px;
+  color: #5d4e74;
+  font-size: 0.98em;
+}
+
+.policy-lead {
+  margin: 0 0 28px;
+  color: #2f2145;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.policy-section + .policy-section {
+  margin-top: 28px;
+}
+
+.policy-section h2 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  color: #1a0034;
+  font-family: "Gilroy Bold";
+}
+
+.policy-section p,
+.policy-section li {
+  color: #312448;
+  line-height: 1.7;
+}
+
+.policy-section ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.policy-section li + li {
+  margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .cookie-banner {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cookie-banner-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .cookie-btn {
+    flex: 1 1 0;
+  }
+
+  .budget-footer {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .footer-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .policy-card {
+    padding: 28px 22px;
+  }
 }

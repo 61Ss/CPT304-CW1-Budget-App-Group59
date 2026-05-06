@@ -11,7 +11,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Budget Web App | javascript</title>
-    <link href="./style.css?v=20260506" rel="stylesheet" type="text/css" />
+    <link href="./style.css?v=20260506-legal-fix3" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div class="budget-container">
@@ -179,10 +179,40 @@
         </span>
         <span class="footer-text">
           <span class="footer-brand">Budget<b>App</b></span>
-          <span class="footer-meta">© 2026 · Group 59 · CPT304</span>
+          <span class="footer-meta">&copy; 2026 Group 59 | CPT304</span>
         </span>
+        <nav class="footer-links" aria-label="Legal links">
+          <a class="footer-link" href="./privacy.html">Privacy Policy</a>
+          <button class="footer-link cookie-settings-btn" id="cookie-settings-btn" type="button">
+            Cookie Settings
+          </button>
+        </nav>
       </footer>
     </div>
+    <section
+      class="cookie-banner hide"
+      id="cookie-banner"
+      aria-labelledby="cookie-banner-title"
+      aria-describedby="cookie-banner-description"
+      hidden
+    >
+      <div class="cookie-banner-copy">
+        <h2 class="cookie-banner-title" id="cookie-banner-title">Your privacy choices</h2>
+        <p class="cookie-banner-description" id="cookie-banner-description">
+          We use local storage to save your budget entries on this device. Accepting enables
+          persistence between visits. Declining keeps the app usable, but your entries will not
+          be saved after you close or refresh the page.
+        </p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button class="cookie-btn cookie-btn-secondary" id="cookie-decline-btn" type="button">
+          Decline
+        </button>
+        <button class="cookie-btn cookie-btn-primary" id="cookie-accept-btn" type="button">
+          Accept
+        </button>
+      </div>
+    </section>
     <div
       class="modal-overlay hide"
       id="alert-modal"
@@ -197,7 +227,7 @@
         <button class="modal-ok" id="alert-modal-ok" type="button">OK</button>
       </div>
     </div>
-    <script src="./chart.js?v=20260506"></script>
-    <script src="./budget.js?v=20260506"></script>
+    <script src="./chart.js?v=20260506-legal-fix3"></script>
+    <script src="./budget.js?v=20260506-legal-fix3"></script>
   </body>
 </html>
