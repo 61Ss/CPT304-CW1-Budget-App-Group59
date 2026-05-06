@@ -84,6 +84,67 @@ input[type="number"] {
   margin-left: 20px;
 }
 
+/* Language switcher — segmented pill in the top-right of the app card.
+   Two flavours are shipped: the default (dark surface, used on the purple
+   container) and `.lang-switcher-light` for white surfaces like the privacy
+   policy card. */
+.lang-switcher {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  z-index: 5;
+}
+
+.lang-switcher .lang-option {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78em;
+  font-family: "Gilroy Bold";
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lang-switcher .lang-option:hover {
+  color: #fff;
+}
+
+.lang-switcher .lang-option.active {
+  background-color: #fff;
+  color: #2a0355;
+}
+
+.lang-switcher .lang-option:focus-visible {
+  outline: 2px solid #f7b801;
+  outline-offset: 2px;
+}
+
+.lang-switcher-light {
+  background-color: #efe7fb;
+}
+
+.lang-switcher-light .lang-option {
+  color: #2a0355;
+}
+
+.lang-switcher-light .lang-option:hover {
+  color: #1a0034;
+}
+
+.lang-switcher-light .lang-option.active {
+  background-color: #2a0355;
+  color: #fff;
+}
+
 .budget-container .app-title a {
   color: #fff;
 }
@@ -737,10 +798,16 @@ input[type="number"] {
 }
 
 .policy-card {
+  position: relative;
   background-color: #fff;
   border-radius: 28px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   padding: 36px 32px;
+}
+
+.policy-card .lang-switcher {
+  top: 24px;
+  right: 24px;
 }
 
 .policy-back {

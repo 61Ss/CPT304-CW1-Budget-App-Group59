@@ -18,6 +18,8 @@ You can check out the live demo of the Budget App here.
 
 - Simple and Intuitive Interface: The app boasts a user-friendly interface, making it easy for anyone to navigate and use, even if you have little to no prior experience with budgeting applications.
 
+- Internationalization (i18n): The app ships with English and Simplified Chinese (中文). A language switcher in the top-right of every page lets users toggle on the fly. The choice is persisted in `localStorage`, falls back to the browser's preferred language on first visit, and updates static labels, ARIA attributes, validation messages, the cookie banner, and the privacy policy in one shot.
+
 ## Usage
 1. Clone the repository or download the ZIP file.
 
@@ -35,6 +37,14 @@ The Budget App was built using the following technologies and tools:
 - HTML5
 - CSS3
 - JavaScript
+- Custom lightweight i18n runtime (`i18n.js`) — no framework, driven by `data-i18n*` attributes on the markup
+
+### Adding or editing translations
+1. Open `i18n.js`.
+2. Each language has its own dictionary inside the `translations` object (`en` and `zh`).
+3. Add or edit the desired key/value pair in **both** dictionaries to keep them in sync.
+4. In the markup, reference the key with `data-i18n="your.key"` for text content, `data-i18n-attr="placeholder:your.key,aria-label:another.key"` for attributes, or `data-i18n-title="your.key"` on the `<html>` element for the document title.
+5. To add a third language, register a new dictionary, add a `<button class="lang-option" data-lang="…">` to the language switcher in `index.html` and `privacy.html`, and the runtime picks it up automatically.
 
 ## Credits
 The Budget App tutorial was created by [aaramiss](https://samiraatech.github.io/Budget-app/).

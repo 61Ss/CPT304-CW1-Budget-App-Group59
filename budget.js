@@ -61,6 +61,21 @@ ENTRY_LIST = loadEntryList();
 updateUI();
 initCookieBanner();
 
+// Re-render dynamic UI when the user toggles the language so entries pick up
+// localised aria-labels. Static markup is handled by i18n.js itself.
+document.addEventListener("languagechange", function () {
+  updateUI();
+});
+
+// Translation helper that falls back to the original string when i18n.js
+// hasn't loaded yet (e.g. during automated tests or if the file is removed).
+function tr(key, params) {
+  if (window.i18n && typeof window.i18n.t === "function") {
+    return window.i18n.t(key, params);
+  }
+  return key;
+}
+
 // Defensive load: coerce types and drop malformed records so a tampered
 // localStorage payload cannot reintroduce script-bearing strings or break
 // the UI on refresh.
@@ -198,14 +213,14 @@ function validateEntry(titleEl, amountEl) {
     return {
       ok: false,
       field: titleEl,
-      message: "Please enter a title.",
+      message: tr("validation.titleRequired"),
     };
   }
   if (title.length > TITLE_MAX_LENGTH) {
     return {
       ok: false,
       field: titleEl,
-      message: `Title must be ${TITLE_MAX_LENGTH} characters or fewer.`,
+      message: tr("validation.titleTooLong", { max: TITLE_MAX_LENGTH }),
     };
   }
 
@@ -213,7 +228,7 @@ function validateEntry(titleEl, amountEl) {
     return {
       ok: false,
       field: amountEl,
-      message: "Please enter an amount.",
+      message: tr("validation.amountRequired"),
     };
   }
 
@@ -222,21 +237,21 @@ function validateEntry(titleEl, amountEl) {
     return {
       ok: false,
       field: amountEl,
-      message: "Amount must be a valid number.",
+      message: tr("validation.amountInvalid"),
     };
   }
   if (amount <= 0) {
     return {
       ok: false,
       field: amountEl,
-      message: "Amount must be greater than 0.",
+      message: tr("validation.amountNotPositive"),
     };
   }
   if (amount > AMOUNT_MAX) {
     return {
       ok: false,
       field: amountEl,
-      message: "Amount is too large.",
+      message: tr("validation.amountTooLarge"),
     };
   }
 
@@ -427,13 +442,13 @@ function showEntry(list, type, title, amount, id) {
   editButton.type = "button";
   editButton.className = "action-btn edit";
   editButton.dataset.action = EDIT;
-  editButton.setAttribute("aria-label", `Edit ${title}`);
+  editButton.setAttribute("aria-label", tr("aria.editEntry", { title }));
 
   const deleteButton = document.createElement("button");
   deleteButton.type = "button";
   deleteButton.className = "action-btn delete";
   deleteButton.dataset.action = DELETE;
-  deleteButton.setAttribute("aria-label", `Delete ${title}`);
+  deleteButton.setAttribute("aria-label", tr("aria.deleteEntry", { title }));
 
   li.appendChild(entryDiv);
   li.appendChild(editButton);
