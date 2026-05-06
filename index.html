@@ -4,8 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Discourage aggressive caching while developing — combined with the
+         versioned ?v= query below this stops Chrome (and others) from
+         showing a stale stylesheet that requires a manual reload. -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Budget Web App | javascript</title>
-    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <link href="./style.css?v=20260506" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div class="budget-container">
@@ -150,21 +156,25 @@
             focusable="false"
           >
             <rect
-              x="2"
-              y="2"
-              width="28"
-              height="28"
+              x="1"
+              y="1"
+              width="30"
+              height="30"
               rx="9"
               fill="currentColor"
               fill-opacity="0.18"
             />
-            <path
-              d="M16 8.5v15M12 13a3 3 0 013-3h3.5M20 19a3 3 0 01-3 3h-4.5"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              fill="none"
-            />
+            <text
+              x="16"
+              y="22"
+              text-anchor="middle"
+              font-family="Gilroy Bold, Gilroy, system-ui, -apple-system, sans-serif"
+              font-size="18"
+              font-weight="700"
+              fill="currentColor"
+            >
+              $
+            </text>
           </svg>
         </span>
         <span class="footer-text">
@@ -187,7 +197,7 @@
         <button class="modal-ok" id="alert-modal-ok" type="button">OK</button>
       </div>
     </div>
-    <script src="./chart.js"></script>
-    <script src="./budget.js"></script>
+    <script src="./chart.js?v=20260506"></script>
+    <script src="./budget.js?v=20260506"></script>
   </body>
 </html>
