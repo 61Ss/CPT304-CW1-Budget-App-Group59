@@ -13,7 +13,7 @@ This repository is the coursework submission for **CPT304 — Software Engineeri
 
 ### Live links
 
-- **App (GitHub Pages):** <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/>
+- **App (GitHub Pages):** <https://cpt-304-cw-1-budget-app-group59.vercel.app/>
 - **Privacy policy:** <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/privacy.html>
 - **Coverage dashboard (Codecov):** <https://codecov.io/gh/61Ss/CPT304-CW1-Budget-App-Group59>
 - **CI runs (GitHub Actions):** <https://github.com/61Ss/CPT304-CW1-Budget-App-Group59/actions/workflows/test.yml>
@@ -59,7 +59,7 @@ The app is deployed via **GitHub Pages** straight from the `master` branch
 
 | Page              | URL                                                                                            |
 | ----------------- | ---------------------------------------------------------------------------------------------- |
-| Budget app        | <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/>                                        |
+| Budget app        | <https://cpt-304-cw-1-budget-app-group59.vercel.app/>                                        |
 | Privacy policy    | <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/privacy.html>                            |
 
 ## Project structure
