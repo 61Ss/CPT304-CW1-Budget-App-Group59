@@ -11,6 +11,13 @@ their data locally — with first-class internationalisation, accessibility and 
 This repository is the coursework submission for **CPT304 — Software Engineering II** at XJTLU
 (Group 59).
 
+### Live links
+
+- **App (GitHub Pages):** <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/>
+- **Privacy policy:** <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/privacy.html>
+- **Coverage dashboard (Codecov):** <https://codecov.io/gh/61Ss/CPT304-CW1-Budget-App-Group59>
+- **CI runs (GitHub Actions):** <https://github.com/61Ss/CPT304-CW1-Budget-App-Group59/actions/workflows/test.yml>
+
 ---
 
 ## Table of contents
@@ -27,9 +34,7 @@ This repository is the coursework submission for **CPT304 — Software Engineeri
 10. [Continuous integration](#continuous-integration)
 11. [Tech stack](#tech-stack)
 12. [Browser support](#browser-support)
-13. [Contributing](#contributing)
-14. [Credits](#credits)
-15. [License](#license)
+13. [License](#license)
 
 ---
 
@@ -49,8 +54,13 @@ This repository is the coursework submission for **CPT304 — Software Engineeri
 
 ## Screenshots / demo
 
-> A live demo can be hosted via GitHub Pages from the `master` branch (Settings → Pages → *Deploy from branch*).
-> Once enabled, the app will be available at `https://<your-org>.github.io/CPT304-CW1-Budget-App-Group59/`.
+The app is deployed via **GitHub Pages** straight from the `master` branch
+(Settings → Pages → *Deploy from branch*):
+
+| Page              | URL                                                                                            |
+| ----------------- | ---------------------------------------------------------------------------------------------- |
+| Budget app        | <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/>                                        |
+| Privacy policy    | <https://61ss.github.io/CPT304-CW1-Budget-App-Group59/privacy.html>                            |
 
 ## Project structure
 
@@ -177,7 +187,15 @@ npm test                 # full Jest suite
 npm run test:coverage    # generates ./coverage (text, html, lcov)
 ```
 
-Open `coverage/lcov-report/index.html` in your browser for a line-by-line report.
+Open `coverage/lcov-report/index.html` in your browser for a local line-by-line report.
+
+### Online coverage dashboard
+
+The latest coverage from `master` (and every PR) is published to Codecov:
+
+- **Project dashboard:** <https://codecov.io/gh/61Ss/CPT304-CW1-Budget-App-Group59>
+- **Sunburst graph (per-file coverage at a glance):** <https://codecov.io/gh/61Ss/CPT304-CW1-Budget-App-Group59/branch/master/graphs/sunburst.svg>
+- **File tree view:** <https://app.codecov.io/gh/61Ss/CPT304-CW1-Budget-App-Group59/tree/master>
 
 ### Coverage gates
 
@@ -217,25 +235,6 @@ Tested against the latest two stable releases of:
 - Google Chrome / Microsoft Edge (Chromium)
 - Mozilla Firefox
 - Apple Safari (desktop & iOS)
-
-Internet Explorer is **not** supported.
-
-## Contributing
-
-This is a coursework repository for CPT304 Group 59, but PRs and issues are welcome.
-
-1. Fork and create a feature branch from `master`.
-2. Make your change. Keep it framework-free and dependency-free at runtime.
-3. Add or update tests in `tests/` so coverage stays ≥ 80 %.
-4. Run `npm run test:coverage` locally before pushing.
-5. Open a pull request — CI will run Jest + Codecov gates automatically.
-
-Please file bugs and feature requests in the [issue tracker](https://github.com/61Ss/CPT304-CW1-Budget-App-Group59/issues).
-
-## Credits
-
-- Original Budget App tutorial concept by [aaramiss](https://github.com/aaramiss/Budget-app).
-- Internationalisation, accessibility, privacy, validation, charting hardening, test suite and CI / Codecov integration by **CPT304 Group 59**.
 
 ## License
 
