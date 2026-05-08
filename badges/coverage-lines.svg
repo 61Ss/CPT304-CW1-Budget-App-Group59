@@ -1,0 +1,20 @@
+<svg width="82.3" height="20" viewBox="0 0 823 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="lines: 99.7%">
+  <title>lines: 99.7%</title>
+  <linearGradient id="QQHNq" x2="0" y2="100%">
+    <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <mask id="uLuEy"><rect width="823" height="200" rx="30" fill="#FFF"/></mask>
+  <g mask="url(#uLuEy)">
+    <rect width="353" height="200" fill="#555"/>
+    <rect width="470" height="200" fill="#97c40f" x="353"/>
+    <rect width="823" height="200" fill="url(#QQHNq)"/>
+  </g>
+  <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+    <text x="60" y="148" textLength="253" fill="#000" opacity="0.25">lines</text>
+    <text x="50" y="138" textLength="253">lines</text>
+    <text x="408" y="148" textLength="370" fill="#000" opacity="0.25">99.7%</text>
+    <text x="398" y="138" textLength="370">99.7%</text>
+  </g>
+  
+</svg>
