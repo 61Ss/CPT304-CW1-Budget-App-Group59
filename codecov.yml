@@ -1,0 +1,34 @@
+# Codecov configuration for the Budget App.
+# Reference: https://docs.codecov.com/docs/codecov-yaml
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+
+  status:
+    project:
+      default:
+        # Enforce the coursework requirement: project-wide coverage must
+        # stay at or above 80%, with a small allowed regression budget.
+        target: 80%
+        threshold: 1%
+        if_ci_failed: error
+    patch:
+      default:
+        # New / changed code must also be tested to at least 80%.
+        target: 80%
+        threshold: 1%
+        if_ci_failed: error
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+
+ignore:
+  - "tests/**"
+  - "coverage/**"
+  - "node_modules/**"
+  - "**/*.html"
+  - "**/*.css"

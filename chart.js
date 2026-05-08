@@ -39,3 +39,10 @@ function updateChart(income, outcome) {
   drawCircle("#FFF", -ratio, true);
   drawCircle("#F0624D", 1 - ratio, false);
 }
+
+// In a browser, top-level function declarations attach to `window` automatically,
+// but under a CommonJS wrapper (e.g. Jest's jsdom test runtime) they stay local.
+// Re-export explicitly so budget.js can find updateChart in both environments.
+if (typeof window !== "undefined") {
+  window.updateChart = updateChart;
+}

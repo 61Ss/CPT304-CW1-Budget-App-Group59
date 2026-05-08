@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master", "**"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    name: Jest + Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      # Public repository: no token required. For a private repo, store a
+      # CODECOV_TOKEN secret and pass it via `with: token: ${{ secrets.CODECOV_TOKEN }}`.
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: budget-app-coverage
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage/lcov-report
+          retention-days: 14
