@@ -210,6 +210,40 @@ describe("budget.js", () => {
     });
   });
 
+  describe("clear all", () => {
+    test("clear all removes every entry and resets totals", () => {
+      fillIncome("Salary", 100);
+      fillExpense("Rent", 40);
+
+      const clearBtn = $("#clear-all-btn");
+      expect(clearBtn.disabled).toBe(false);
+
+      clearBtn.click();
+
+      expect($("#income .list").children.length).toBe(0);
+      expect($("#expense .list").children.length).toBe(0);
+      expect($("#all .list").children.length).toBe(0);
+      expect($(".income-total").textContent).toBe("$0");
+      expect($(".outcome-total").textContent).toBe("$0");
+      expect($(".balance .value").textContent).toBe("$0");
+      expect(clearBtn.disabled).toBe(true);
+      expect(clearBtn.getAttribute("aria-disabled")).toBe("true");
+    });
+
+    test("clear all on an empty list is a no-op", () => {
+      const clearBtn = $("#clear-all-btn");
+      expect(clearBtn.disabled).toBe(true);
+
+      clearBtn.click();
+
+      expect($("#income .list").children.length).toBe(0);
+      expect($("#expense .list").children.length).toBe(0);
+      expect($("#all .list").children.length).toBe(0);
+      expect($(".balance .value").textContent).toBe("$0");
+      expect(clearBtn.disabled).toBe(true);
+    });
+  });
+
   describe("tabs", () => {
     test("clicking the expense tab shows the expense panel and hides the others", () => {
       $(".first-tab").click();
