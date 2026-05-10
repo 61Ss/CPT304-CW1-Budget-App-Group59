@@ -32,6 +32,9 @@
       "tabs.income": "Income",
       "tabs.all": "All",
 
+      // Actions
+      "actions.clearAll": "Clear all",
+
       // Inputs
       "input.title.placeholder": "title",
       "input.amount.placeholder": "$0",
@@ -42,6 +45,7 @@
       "aria.legalLinks": "Legal links",
       "aria.addExpense": "Add expense",
       "aria.addIncome": "Add income",
+      "aria.clearAll": "Clear all entries",
       "aria.editEntry": "Edit {title}",
       "aria.deleteEntry": "Delete {title}",
       "aria.languageSwitcher": "Language switcher",
@@ -128,6 +132,8 @@
       "tabs.income": "\u6536\u5165",
       "tabs.all": "\u5168\u90E8",
 
+      "actions.clearAll": "\u4E00\u952E\u5220\u9664",
+
       "input.title.placeholder": "\u6807\u9898",
       "input.amount.placeholder": "$0",
 
@@ -136,6 +142,7 @@
       "aria.legalLinks": "\u6CD5\u5F8B\u94FE\u63A5",
       "aria.addExpense": "\u6DFB\u52A0\u652F\u51FA",
       "aria.addIncome": "\u6DFB\u52A0\u6536\u5165",
+      "aria.clearAll": "\u4E00\u952E\u5220\u9664\u6240\u6709\u6761\u76EE",
       "aria.editEntry": "\u7F16\u8F91 {title}",
       "aria.deleteEntry": "\u5220\u9664 {title}",
       "aria.languageSwitcher": "\u8BED\u8A00\u5207\u6362",

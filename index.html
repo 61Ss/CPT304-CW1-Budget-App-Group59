@@ -11,7 +11,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Budget Web App | javascript</title>
-    <link href="./style.css?v=20260506-i18n" rel="stylesheet" type="text/css" />
+    <link href="./style.css?v=20260508-ui6" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div class="budget-container">
@@ -61,7 +61,19 @@
         </div>
       </div>
       <div class="budget-dashboard">
-        <div class="dash-title" data-i18n="dashboard.title">Dashboard</div>
+        <div class="dashboard-head">
+          <div class="dash-title" data-i18n="dashboard.title">Dashboard</div>
+          <button
+            class="clear-all-btn"
+            id="clear-all-btn"
+            type="button"
+            aria-label="Clear all entries"
+            data-i18n="actions.clearAll"
+            data-i18n-attr="aria-label:aria.clearAll"
+          >
+            Clear all
+          </button>
+        </div>
         <div
           class="toggle"
           role="tablist"
@@ -279,8 +291,8 @@
         <button class="modal-ok" id="alert-modal-ok" type="button" data-i18n="alert.ok">OK</button>
       </div>
     </div>
-    <script src="./i18n.js?v=20260506-i18n"></script>
-    <script src="./chart.js?v=20260506-i18n"></script>
-    <script src="./budget.js?v=20260506-i18n"></script>
+    <script src="./i18n.js?v=20260508-ui6"></script>
+    <script src="./chart.js?v=20260508-ui6"></script>
+    <script src="./budget.js?v=20260508-ui6"></script>
   </body>
 </html>

@@ -32,6 +32,7 @@ const cookieBanner = document.getElementById("cookie-banner");
 const cookieAcceptBtn = document.getElementById("cookie-accept-btn");
 const cookieDeclineBtn = document.getElementById("cookie-decline-btn");
 const cookieSettingsBtn = document.getElementById("cookie-settings-btn");
+const clearAllBtn = document.getElementById("clear-all-btn");
 let alertReturnFocus = null;
 let cookieReturnFocus = null;
 
@@ -167,6 +168,7 @@ cookieDeclineBtn.addEventListener("click", function () {
 cookieSettingsBtn.addEventListener("click", function () {
   openCookieBanner(cookieSettingsBtn);
 });
+clearAllBtn.addEventListener("click", clearAllEntries);
 
 // Modal dismissal: OK button, ESC key, or click on the backdrop.
 alertOkBtn.addEventListener("click", closeAlert);
@@ -297,6 +299,13 @@ function deleteEntry(entry) {
   updateUI();
 }
 
+function clearAllEntries() {
+  if (ENTRY_LIST.length === 0) return;
+
+  ENTRY_LIST = [];
+  updateUI();
+}
+
 function editEntry(entry) {
   const ENTRY = ENTRY_LIST[entry.id];
 
@@ -333,7 +342,14 @@ function updateUI() {
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
   updateChart(income, outcome);
+  updateClearAllState();
   persistEntryList();
+}
+
+function updateClearAllState() {
+  const isEmpty = ENTRY_LIST.length === 0;
+  clearAllBtn.disabled = isEmpty;
+  clearAllBtn.setAttribute("aria-disabled", String(isEmpty));
 }
 
 function readStoredConsent() {
